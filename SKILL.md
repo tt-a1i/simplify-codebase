@@ -45,7 +45,10 @@ Use repository-native search, compiler and linter output, dependency metadata, a
 For every in-scope lead that reaches consumer-map evidence or could retire a meaningful contract, record:
 
 ```text
+Finding ID: a stable report-local identifier such as S1 or S2
 Candidate: the exact contract, representation, or layer to remove or merge
+Locus: the ownership boundary, symbols, and exact paths or lines when verified
+Topology: confirmed node and relationship IDs, primary locus, related nodes, route, and cut set when useful; otherwise not applicable
 Burden: the concepts, synchronization, publication, or testing cost it creates
 Reachability: production, non-production, dynamic, external, and persisted consumers
 Rationale: why it exists and whether that reason remains current
@@ -55,6 +58,8 @@ Confidence / risk: evidence strength, uncertainty, blast radius, and reversibili
 Proof: the smallest check that would expose an incorrect cut
 Net effect: maintenance concepts removed minus replacement or migration machinery added
 ```
+
+Keep Finding IDs stable within the run so the summary, proof record, source links, and any visual companion refer to the same candidate. Do not invent a line number, owner, relationship, or route to fill the location fields. Mark unknown facts as unresolved.
 
 Prove cut boundaries below file granularity when the candidate shares an artifact with surviving consumers. Account for candidate-exclusive selectors, members, fields, keys, registry entries, generated fragments, and fixtures without disturbing the surviving owners.
 
@@ -74,8 +79,17 @@ If the user requests a simplification proposal, local cleanup annotation, or des
 
 If the user asks to combine findings from another branch, pull request, task, or agent run, read [integrating-findings.md](references/integrating-findings.md). Preserve evidence, not finding counts.
 
+When the user requests a visual report, or when several confirmed components and relationships make a candidate's locus materially clearer, read [visual-reporting.md](references/visual-reporting.md). Use the bundled cleanup-map renderer rather than requiring a general diagram Skill. Treat the map as an optional companion to the proof records, not as evidence by itself. Do not write Survey artifacts into the target repository unless the user requested repository files.
+
 ## Deliver the result
 
-For a survey, report coverage, ranked proof records, rejected or unresolved high-value leads, and the next fact needed for each uncertainty.
+For a survey, report coverage, ranked proof records, rejected or unresolved high-value leads, and the next fact needed for each uncertainty. When a visual companion was requested or justified, report its status and cleanup-map Finding deep links separately.
 
-For a change, complete the validation and operation receipt defined in [execution-and-recovery.md](references/execution-and-recovery.md). Report each validation layer separately; a narrow green check does not establish broader runtime, deployment, or user acceptance.
+Keep the handoff scan-friendly. Lead with the result, then include only the
+proof records, decision-relevant uncertainty, visual links, and validation that
+the user needs. Do not narrate the search process, repeat the same evidence
+under several labels, append generic advice, or keep empty sections. Concision
+does not remove required proof fields: write each field once, in the shortest
+form that preserves its subject, evidence strength, consequence, and boundary.
+
+For a change, complete the validation and operation receipt defined in [execution-and-recovery.md](references/execution-and-recovery.md). A Before/Cut/After/Verify cleanup map may explain a structural change, but it never replaces the operation receipt. Report each validation layer separately; a narrow green check does not establish broader runtime, deployment, or user acceptance.

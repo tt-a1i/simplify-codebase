@@ -1,0 +1,55 @@
+{
+  "schema_version": 1,
+  "map_type": "cleanup",
+  "meta": {
+    "title": "运行时分发路径修改结果",
+    "mode": "change",
+    "scope": "focused",
+    "repository": "example/service",
+    "revision": "working-tree-example",
+    "locale": "zh-CN"
+  },
+  "nodes": [
+    { "id": "entrypoint", "label": "HTTP 入口", "role": "entrypoint", "locus": { "path": "src/http/route.ts", "line": 18 }, "column": 0 },
+    { "id": "coordinator", "label": "分发协调器", "role": "owner", "locus": { "path": "src/runtime/coordinator.ts", "line": 42 }, "column": 1 },
+    { "id": "legacyRouter", "label": "旧路由适配器", "role": "candidate", "locus": { "path": "src/runtime/legacy-router.ts", "line": 11 }, "column": 2 },
+    { "id": "handler", "label": "主处理器", "role": "owner", "locus": { "path": "src/runtime/handler.ts", "line": 27 }, "column": 3 },
+    { "id": "publisher", "label": "结果发布器", "role": "consumer", "locus": { "path": "src/runtime/publisher.ts", "line": 33 }, "column": 4 }
+  ],
+  "relationships": [
+    { "id": "requestDispatch", "from": "entrypoint", "to": "coordinator", "label": "发起分发", "kind": "call", "evidence": "confirmed" },
+    { "id": "legacyDelegate", "from": "coordinator", "to": "legacyRouter", "label": "重新编码操作键", "kind": "call", "evidence": "confirmed" },
+    { "id": "canonicalDelegate", "from": "legacyRouter", "to": "handler", "label": "转交处理", "kind": "call", "evidence": "confirmed" },
+    { "id": "directDelegate", "from": "coordinator", "to": "handler", "label": "直接转交", "kind": "call", "evidence": "confirmed" },
+    { "id": "resultPublish", "from": "handler", "to": "publisher", "label": "发布结果", "kind": "publication", "evidence": "confirmed" }
+  ],
+  "findings": [
+    {
+      "id": "S1",
+      "title": "重复的操作路由层",
+      "disposition": "changed",
+      "confidence": "high",
+      "risk": "medium",
+      "summary": "旧路由适配器和两条转交关系已经删除，coordinator 现在直接调用 handler。",
+      "primary": "legacyRouter",
+      "related": ["entrypoint", "coordinator", "legacyRouter", "handler", "publisher"],
+      "route": { "from": "coordinator", "to": "legacyRouter" },
+      "cut": { "nodes": ["legacyRouter"], "relationships": ["legacyDelegate", "canonicalDelegate"] },
+      "proof": "改为直接调用后，分发集成测试和结果发布边界对比均通过。",
+      "consequence": "旧的操作键表示和适配器导入路径不再受支持。",
+      "unknowns": []
+    }
+  ],
+  "change": {
+    "finding_id": "S1",
+    "before": {
+      "nodes": ["entrypoint", "coordinator", "legacyRouter", "handler", "publisher"],
+      "relationships": ["requestDispatch", "legacyDelegate", "canonicalDelegate", "resultPublish"]
+    },
+    "after": {
+      "nodes": ["entrypoint", "coordinator", "handler", "publisher"],
+      "relationships": ["requestDispatch", "directDelegate", "resultPublish"]
+    },
+    "verification": "残留搜索没有发现旧引用；分发集成测试、包测试和构建均通过；差异检查完成。本内容仅为示例。"
+  }
+}

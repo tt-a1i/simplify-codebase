@@ -34,6 +34,7 @@ Static analysis can surface leads, but it cannot prove a deletion safe by itself
 
 Every serious candidate receives a proof record covering:
 
+- the exact ownership boundary, symbol, file, and verified source range where available;
 - the maintenance burden it creates;
 - production, test, dynamic, and external consumers;
 - the complete cut, including candidate-owned members inside shared files;
@@ -71,6 +72,8 @@ git clone https://github.com/tt-a1i/simplify-codebase.git \
 
 Start a new task after installation so the Skill catalog refreshes. For other Agent environments that support `SKILL.md`, place the repository in that environment's Skill directory.
 
+The interactive Cleanup Map is bundled with this Skill; Archify does not need to be installed separately. It vendors a trimmed Architecture renderer and desktop interaction core, then adds cleanup-specific compilation and Survey/Change behavior. The renderer requires Node.js 18 or newer, has no npm package dependency, and produces HTML without external font requests.
+
 ## Use
 
 ### Audit a repository without editing it
@@ -97,31 +100,51 @@ Use $simplify-codebase to remove one high-confidence source of accidental comple
 Use $simplify-codebase to verify and integrate the simplification findings from this PR. Preserve evidence, not finding counts.
 ```
 
+### Add a visual companion
+
+```text
+Use $simplify-codebase to audit this repository. Keep the written proof records authoritative. When several confirmed components and consumers make a finding hard to locate, also deliver a Cleanup Map with deep links for each visualized Finding ID. Do not call authored graph reachability runtime impact.
+```
+
 ## What it returns
 
 A read-only survey returns coverage, ranked proof records, important counterexamples, unresolved questions, and the next fact needed for each uncertainty.
 
 A change task also returns the implemented cut, validation results by layer, remaining risk, an operation receipt, and an executable undo path. A narrow green check is never presented as complete runtime or user acceptance.
 
+When a finding crosses several components, states, or consumers, the Skill can use its bundled renderer to deliver a validated desktop interactive HTML artifact. Survey follows Locate, Trace, Cut, and Decide; Change follows Before, Cut, After, and Verify. The map remains a visual companion to the proof record, never a substitute for consumer evidence, the Change operation receipt, or the undo path. When topology remains unresolved or a map adds no explanatory value, the result falls back to the complete text report with exact source locations.
+
 ## Repository layout
 
 ```text
 .
 ├── SKILL.md                    # Core workflow and decision rules
+├── PRODUCT.md                  # Visualization product and disclosure principles
 ├── agents/openai.yaml          # Agent-facing metadata
 ├── references/
 │   ├── investigation.md        # Broad investigation and discovery
 │   ├── boundaries-and-lifecycle.md
 │   ├── execution-and-recovery.md
 │   ├── decision-records.md
-│   └── integrating-findings.md
+│   ├── integrating-findings.md
+│   └── visual-reporting.md     # Truth and delivery contract for optional visuals
+├── visualization/
+│   ├── cleanup-map.schema.json # Cleanup-specific semantic contract
+│   ├── render-cleanup-map.mjs  # Cleanup Map to Archify Architecture compiler
+│   ├── archify-core/           # Vendored Architecture renderer and desktop viewer
+│   ├── cleanup-extension.*     # Survey and Change interaction extension
+│   ├── examples/               # Survey and Change inputs
+│   └── test/                   # Contract, route, and artifact tests
 ├── docs/validation.md          # Behavioral validation evidence
+├── docs/visual-report-example.md
 └── assets/hero.png             # Original hero artwork
 ```
 
 ## Quality and boundaries
 
 This version has been exercised in Change, Broad, Integration, and Decision-record scenarios, including a full survey of a 973-file Python + TypeScript project. See [docs/validation.md](./docs/validation.md) for the method and known limits.
+
+The visual companion directly vendors Archify's Architecture renderer, Signal Flow visual system, and desktop viewer runtime, then adds Findings, Survey/Change stages, cut boundaries, and an on-demand evidence drawer. The default surface first uses a concise analysis finding to orient the user, then discloses source, route, and decision evidence with the active stage while the graph keeps the primary visual space. Other general diagram renderers, the repository CLI, publishing, and gallery flows are not included. Attribution, adaptation notes, and the MIT license are preserved under [`visualization/`](./visualization/). See [docs/visual-report-example.md](./docs/visual-report-example.md) for the handoff format.
 
 The Skill does not replace product judgment. Removing a reachable capability, supported interface, persisted representation, or compatibility path still requires explicit user authority.
 

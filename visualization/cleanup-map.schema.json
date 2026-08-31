@@ -1,0 +1,181 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/tt-a1i/simplify-codebase/visualization/cleanup-map.schema.json",
+  "title": "Simplify Codebase cleanup map",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "map_type", "meta", "nodes", "relationships", "findings"],
+  "allOf": [
+    {
+      "if": {
+        "properties": { "meta": { "type": "object", "properties": { "mode": { "const": "change" } }, "required": ["mode"] } }
+      },
+      "then": {
+        "required": ["change"],
+        "properties": {
+          "findings": {
+            "type": "array",
+            "maxItems": 1,
+            "items": { "type": "object", "properties": { "disposition": { "const": "changed" } } }
+          }
+        }
+      },
+      "else": {
+        "properties": {
+          "findings": {
+            "type": "array",
+            "items": { "type": "object", "properties": { "disposition": { "const": "ranked" } } }
+          }
+        }
+      }
+    }
+  ],
+  "properties": {
+    "schema_version": { "const": 1 },
+    "map_type": { "const": "cleanup" },
+    "meta": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["title", "mode", "scope"],
+      "properties": {
+        "title": { "type": "string", "minLength": 1, "maxLength": 72 },
+        "mode": { "enum": ["survey", "change"] },
+        "scope": { "enum": ["focused", "broad"] },
+        "repository": { "type": "string" },
+        "revision": { "type": "string" },
+        "locale": { "enum": ["en", "zh-CN"] }
+      }
+    },
+    "nodes": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 18,
+      "items": { "$ref": "#/$defs/node" }
+    },
+    "relationships": {
+      "type": "array",
+      "maxItems": 32,
+      "items": { "$ref": "#/$defs/relationship" }
+    },
+    "findings": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 5,
+      "items": { "$ref": "#/$defs/finding" }
+    },
+    "change": { "$ref": "#/$defs/change" }
+  },
+  "$defs": {
+    "id": {
+      "type": "string",
+      "pattern": "^[A-Za-z][A-Za-z0-9_-]*$"
+    },
+    "idList": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": { "$ref": "#/$defs/id" }
+    },
+    "locus": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path"],
+      "properties": {
+        "path": { "type": "string", "minLength": 1 },
+        "line": { "type": "integer", "minimum": 1 },
+        "symbol": { "type": "string" },
+        "href": { "type": "string" }
+      }
+    },
+    "node": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "label", "role"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "label": { "type": "string", "minLength": 1, "maxLength": 30 },
+        "role": {
+          "enum": ["entrypoint", "owner", "candidate", "consumer", "state", "store", "boundary", "external"]
+        },
+        "locus": { "$ref": "#/$defs/locus" },
+        "column": { "type": "integer", "minimum": 0, "maximum": 5 }
+      }
+    },
+    "relationship": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "from", "to", "label", "kind", "evidence"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "from": { "$ref": "#/$defs/id" },
+        "to": { "$ref": "#/$defs/id" },
+        "label": { "type": "string", "minLength": 1, "maxLength": 28 },
+        "kind": { "enum": ["call", "data", "registration", "publication", "lifecycle", "dependency"] },
+        "evidence": { "const": "confirmed" }
+      }
+    },
+    "route": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["from", "to"],
+      "properties": {
+        "from": { "$ref": "#/$defs/id" },
+        "to": { "$ref": "#/$defs/id" }
+      }
+    },
+    "cut": {
+      "type": "object",
+      "additionalProperties": false,
+      "minProperties": 1,
+      "properties": {
+        "nodes": { "$ref": "#/$defs/idList" },
+        "relationships": { "$ref": "#/$defs/idList" }
+      }
+    },
+    "finding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "title", "disposition", "confidence", "summary", "primary", "related", "cut", "proof"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^S[1-9][0-9]*$" },
+        "title": { "type": "string", "minLength": 1, "maxLength": 56 },
+        "disposition": { "enum": ["ranked", "retained", "rejected", "unresolved", "changed"] },
+        "confidence": { "enum": ["high", "medium", "low"] },
+        "risk": { "enum": ["high", "medium", "low"] },
+        "summary": { "type": "string", "minLength": 1, "maxLength": 180 },
+        "primary": { "$ref": "#/$defs/id" },
+        "related": { "$ref": "#/$defs/idList" },
+        "route": { "$ref": "#/$defs/route" },
+        "cut": { "$ref": "#/$defs/cut" },
+        "proof": { "type": "string", "minLength": 1, "maxLength": 240 },
+        "consequence": { "type": "string", "maxLength": 160 },
+        "unknowns": {
+          "type": "array",
+          "maxItems": 3,
+          "uniqueItems": true,
+          "items": { "type": "string", "minLength": 1, "maxLength": 140 }
+        },
+        "report_url": { "type": "string" }
+      }
+    },
+    "snapshot": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["nodes", "relationships"],
+      "properties": {
+        "nodes": { "$ref": "#/$defs/idList" },
+        "relationships": { "$ref": "#/$defs/idList" }
+      }
+    },
+    "change": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["finding_id", "before", "after", "verification"],
+      "properties": {
+        "finding_id": { "type": "string", "pattern": "^S[1-9][0-9]*$" },
+        "before": { "$ref": "#/$defs/snapshot" },
+        "after": { "$ref": "#/$defs/snapshot" },
+        "verification": { "type": "string", "minLength": 1, "maxLength": 240 }
+      }
+    }
+  }
+}

@@ -1,0 +1,394 @@
+/* Simplify Codebase controls layered onto the vendored Archify viewer.
+   The graph carries topology and state. This layer exposes only the cleanup
+   workflow and decision evidence that the graph cannot express by itself. */
+html[data-cleanup-artifact="true"] .header {
+  margin: 0.15rem 0 0.78rem;
+  padding: 0 12.5rem 0.8rem 0;
+  border-bottom: 1px solid color-mix(in srgb, var(--panel-border) 72%, transparent);
+}
+
+html[data-cleanup-artifact="true"] .header-row {
+  gap: 0;
+  margin-bottom: 0;
+}
+
+html[data-cleanup-artifact="true"] .header-row::after,
+html[data-cleanup-artifact="true"] .pulse-dot {
+  display: none;
+  content: none;
+}
+
+html[data-cleanup-artifact="true"] .header h1 {
+  color: var(--text);
+  font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-size: 1.08rem;
+  font-weight: 720;
+  line-height: 1.35;
+  letter-spacing: -0.018em;
+  text-wrap: balance;
+}
+
+html[data-cleanup-artifact="true"] .header .subtitle {
+  max-width: 72ch;
+  margin: 0.24rem 0 0;
+  color: color-mix(in srgb, var(--text) 64%, var(--bg));
+  font-size: 0.72rem;
+  line-height: 1.48;
+  text-wrap: pretty;
+}
+
+.cleanup-stage-panel {
+  position: relative;
+  width: 100%;
+  margin: 0 0 0.45rem;
+  padding: 0;
+  overflow: hidden;
+  border: 1px solid var(--panel-border);
+  border-radius: 0.68rem;
+  background: color-mix(in srgb, var(--toolbar-bg) 82%, var(--bg));
+}
+
+.cleanup-analysis-header {
+  display: grid;
+  grid-template-columns: minmax(10.5rem, auto) minmax(0, 1fr);
+  align-items: stretch;
+  gap: 0;
+}
+
+.cleanup-finding-strip {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  align-content: center;
+  flex-wrap: wrap;
+  gap: 0.36rem;
+  padding: 0.72rem 0.8rem;
+  border-right: 1px solid var(--panel-border);
+  background: color-mix(in srgb, var(--toolbar-bg) 56%, transparent);
+}
+
+.cleanup-finding-button {
+  position: relative;
+  width: 2.5rem;
+  height: 2.5rem;
+  border: 1px solid var(--toolbar-border);
+  border-radius: 0.34rem;
+  background: transparent;
+  color: var(--text-muted);
+  font: 700 0.7rem/1 'JetBrains Mono', ui-monospace, monospace;
+  transition: border-color 160ms ease, background 160ms ease, color 160ms ease;
+}
+
+.cleanup-finding-button::after {
+  content: "";
+  position: absolute;
+  right: 0.3rem;
+  bottom: 0.3rem;
+  width: 0.28rem;
+  height: 0.28rem;
+  border-radius: 50%;
+  background: var(--text-muted);
+}
+
+.cleanup-finding-button[data-disposition="ranked"]::after { background: var(--frontend-stroke); }
+.cleanup-finding-button[data-disposition="changed"]::after { background: var(--database-stroke); }
+.cleanup-finding-button[data-disposition="unresolved"]::after { background: var(--security-stroke); }
+.cleanup-finding-button[data-disposition="rejected"]::after { background: var(--security-stroke); }
+.cleanup-finding-button:hover { border-color: var(--frontend-stroke); color: var(--text); }
+.cleanup-finding-button:focus-visible,
+.cleanup-stage-button:focus-visible,
+.cleanup-evidence-toggle:focus-visible {
+  outline: 2px solid var(--frontend-stroke);
+  outline-offset: 2px;
+}
+.cleanup-finding-button[aria-pressed="true"] {
+  border-color: var(--frontend-stroke);
+  background: var(--frontend-fill);
+  color: var(--text);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--frontend-stroke) 28%, transparent);
+}
+
+.cleanup-finding-identity {
+  display: flex;
+  width: min(100%, 74ch);
+  min-width: 0;
+  flex-direction: column;
+  justify-content: center;
+  padding: 0.72rem 1rem 0.76rem;
+}
+
+.cleanup-finding-title {
+  color: var(--text);
+  font-size: 1rem;
+  font-weight: 720;
+  line-height: 1.38;
+  text-wrap: balance;
+}
+
+.cleanup-finding-summary {
+  max-width: 78ch;
+  margin-top: 0.3rem;
+  color: color-mix(in srgb, var(--text) 68%, var(--bg));
+  font-size: 0.77rem;
+  line-height: 1.52;
+  text-wrap: pretty;
+}
+
+.cleanup-finding-meta {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.46rem;
+  margin-top: 0.4rem;
+  color: var(--text-muted);
+  font: 600 0.7rem/1.3 'JetBrains Mono', ui-monospace, monospace;
+  letter-spacing: 0;
+}
+
+.cleanup-finding-meta span + span::before {
+  content: "·";
+  margin-right: 0.48rem;
+  color: var(--toolbar-border);
+}
+
+.cleanup-stage-rail {
+  display: grid;
+  grid-template-columns: auto minmax(14rem, 1fr) auto;
+  align-items: center;
+  gap: 0.8rem;
+  padding: 0.56rem 0.8rem;
+  border-top: 1px solid var(--panel-border);
+  background: color-mix(in srgb, var(--bg) 34%, transparent);
+}
+
+.cleanup-stage-controls {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(4.35rem, 1fr));
+  overflow: hidden;
+  border: 1px solid var(--toolbar-border);
+  border-radius: 0.38rem;
+}
+
+.cleanup-stage-caption {
+  max-width: 76ch;
+  color: var(--text-muted);
+  font-size: 0.7rem;
+  line-height: 1.48;
+  text-wrap: pretty;
+}
+
+.cleanup-stage-button {
+  min-height: 2.5rem;
+  border: 0;
+  border-right: 1px solid var(--toolbar-border);
+  background: transparent;
+  color: var(--toolbar-text);
+  padding: 0 0.58rem;
+  font: 700 0.7rem/1 'JetBrains Mono', ui-monospace, monospace;
+  transition: background 160ms ease, color 160ms ease;
+}
+
+.cleanup-stage-button:last-child { border-right: 0; }
+.cleanup-stage-button:hover { background: var(--toolbar-hover); color: var(--text); }
+.cleanup-stage-button[aria-pressed="true"] {
+  background: var(--frontend-stroke);
+  color: var(--bg);
+}
+
+.cleanup-stage-key {
+  margin-right: 0.32rem;
+  opacity: 0.62;
+  font-size: 0.7rem;
+}
+
+.cleanup-evidence-toggle {
+  min-height: 2.5rem;
+  border: 1px solid var(--toolbar-border);
+  border-radius: 0.38rem;
+  background: transparent;
+  color: var(--toolbar-text);
+  padding: 0 0.72rem;
+  font: 700 0.7rem/1 'JetBrains Mono', ui-monospace, monospace;
+  transition: border-color 160ms ease, background 160ms ease, color 160ms ease;
+}
+
+.cleanup-evidence-toggle:hover { border-color: var(--frontend-stroke); color: var(--text); }
+.cleanup-evidence-toggle[aria-expanded="true"] {
+  border-color: color-mix(in srgb, var(--frontend-stroke) 64%, var(--toolbar-border));
+  background: var(--frontend-fill);
+  color: var(--text);
+}
+
+.cleanup-truth-boundary {
+  margin: 0;
+  padding: 0.42rem 0.8rem 0.5rem;
+  border-top: 1px solid color-mix(in srgb, var(--panel-border) 64%, transparent);
+  color: var(--text-muted);
+  font-size: 0.7rem;
+  line-height: 1.4;
+}
+
+.cleanup-workspace {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  align-items: stretch;
+  gap: 0.75rem;
+}
+
+.cleanup-workspace[data-evidence-open="true"] {
+  grid-template-columns: minmax(0, 1fr) minmax(18rem, 21rem);
+}
+
+.cleanup-evidence-drawer {
+  display: flex;
+  min-width: 0;
+  max-height: clamp(30rem, 61vh, 42rem);
+  flex-direction: column;
+  overflow: auto;
+  border: 1px solid var(--panel-border);
+  border-radius: 1rem;
+  background: color-mix(in srgb, var(--toolbar-bg) 92%, var(--bg));
+}
+
+.cleanup-evidence-drawer[hidden] { display: none; }
+
+.cleanup-evidence-item {
+  min-width: 0;
+  padding: 0.9rem 1rem;
+  border-bottom: 1px solid var(--panel-border);
+}
+
+.cleanup-evidence-item:last-child { border-bottom: 0; }
+.cleanup-evidence-item[hidden] { display: none; }
+
+.cleanup-evidence-label {
+  display: block;
+  margin-bottom: 0.3rem;
+  color: var(--frontend-stroke);
+  font: 700 0.7rem/1 'JetBrains Mono', ui-monospace, monospace;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.cleanup-evidence-value {
+  max-width: 72ch;
+  color: var(--text);
+  font-size: 0.72rem;
+  line-height: 1.58;
+}
+
+.cleanup-evidence-unknown .cleanup-evidence-label { color: var(--security-stroke); }
+.cleanup-report-link {
+  display: inline-block;
+  margin-top: 0.42rem;
+  color: var(--frontend-stroke);
+  font: 700 0.7rem/1 'JetBrains Mono', ui-monospace, monospace;
+  text-decoration: none;
+}
+.cleanup-report-link:hover { text-decoration: underline; }
+
+.cleanup-passport-locus {
+  max-width: 100%;
+  overflow: hidden;
+  color: var(--frontend-stroke);
+  font: 600 0.7rem/1.4 'JetBrains Mono', ui-monospace, monospace;
+  text-overflow: ellipsis;
+  text-decoration: none;
+  white-space: nowrap;
+}
+.cleanup-passport-locus[href]:hover { text-decoration: underline; }
+
+html[data-cleanup-artifact="true"][data-theme="light"] .cleanup-evidence-item:not(.cleanup-evidence-unknown) .cleanup-evidence-label,
+html[data-cleanup-artifact="true"][data-theme="light"] .cleanup-report-link,
+html[data-cleanup-artifact="true"][data-theme="light"] .cleanup-passport-locus {
+  color: var(--text-muted);
+}
+
+html[data-cleanup-artifact="true"] .diagram-nav button {
+  min-width: 2.4rem;
+  height: 2.4rem;
+}
+
+html[data-cleanup-artifact="true"] .diagram-nav [data-view="reset"],
+html[data-cleanup-artifact="true"] .diagram-nav [data-view="reset"][data-detail-visible] {
+  min-width: 4.5rem;
+  padding-inline: 0.46rem;
+}
+
+html[data-cleanup-artifact="true"] .diagram-container[data-camera-mode="semantic"] .diagram-nav [data-view="reset"] {
+  background: color-mix(in srgb, var(--frontend-fill) 72%, transparent);
+  color: var(--text);
+}
+
+/* This is a desktop investigation surface: give the visual analysis enough
+   vertical room to keep node labels and relationship geometry legible. */
+html:not([data-embed="true"]) .diagram-container {
+  min-width: 0;
+  min-height: clamp(30rem, 61vh, 42rem);
+}
+
+html:not([data-embed="true"]) .diagram-container > svg {
+  display: block;
+  width: 100%;
+  min-height: 27rem;
+}
+
+/* Archify may add data-nav-stage-rail after its first layout probe. Keep the
+   Cleanup reader's vertical geometry identical before and after that probe so
+   ordinary laptop viewports do not jump upward after first paint. */
+@media (min-width: 768px) and (max-height: 920px) {
+  html[data-cleanup-artifact="true"] body { padding-block: 0.375rem; }
+}
+
+html[data-cleanup-ready="true"] svg [data-node-id],
+html[data-cleanup-ready="true"] svg [data-edge-id] {
+  transition: opacity 180ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+svg [data-node-id][data-cleanup-muted="true"] {
+  opacity: 0.36 !important;
+  filter: saturate(0.38);
+}
+svg [data-edge-id][data-cleanup-muted="true"] {
+  opacity: 0.3 !important;
+  filter: saturate(0.3);
+}
+svg [data-node-id][data-focus-selected] {
+  opacity: 1 !important;
+  filter: drop-shadow(0 0 11px color-mix(in srgb, var(--frontend-stroke) 78%, transparent)) !important;
+}
+svg [data-node-id][data-focus-selected] rect:not(.c-mask) {
+  stroke: var(--frontend-stroke) !important;
+  stroke-width: 3.25px !important;
+}
+svg [data-cleanup-absent="true"] { display: none !important; }
+svg [data-cleanup-primary="true"] rect:not(.c-mask) {
+  stroke: var(--frontend-stroke) !important;
+  stroke-width: 3px !important;
+  filter: drop-shadow(0 0 8px color-mix(in srgb, var(--frontend-stroke) 58%, transparent));
+}
+svg [data-cleanup-cut="true"] rect:not(.c-mask) {
+  stroke: var(--security-stroke) !important;
+  stroke-width: 3px !important;
+  filter: drop-shadow(0 0 8px color-mix(in srgb, var(--security-stroke) 48%, transparent));
+}
+svg path[data-cleanup-cut="true"] {
+  stroke: var(--security-stroke) !important;
+  stroke-width: 3px !important;
+  stroke-dasharray: 8 5;
+}
+svg g[data-edge-id][data-cleanup-cut="true"] text { fill: var(--security-stroke) !important; }
+
+@media (prefers-reduced-motion: reduce) {
+  .cleanup-finding-button,
+  .cleanup-stage-button,
+  .cleanup-evidence-toggle,
+  html[data-cleanup-ready="true"] svg [data-node-id],
+  html[data-cleanup-ready="true"] svg [data-edge-id] { transition: none; }
+}
+
+@media print {
+  .cleanup-stage-panel,
+  .cleanup-evidence-drawer { display: none !important; }
+  .cleanup-workspace { display: block; }
+}

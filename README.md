@@ -34,6 +34,7 @@
 
 每个候选都要形成一份证明记录：
 
+- 它位于哪个所有权边界、符号、文件，以及能够验证时的行号；
 - 它增加了什么维护负担；
 - 生产、测试、动态和外部消费者分别是谁；
 - 完整删除边界在哪里，包括共享文件内部的成员；
@@ -69,6 +70,8 @@ git clone https://github.com/tt-a1i/simplify-codebase.git \
 
 安装后请新建一个任务，让 Skill 目录重新加载。其他支持 `SKILL.md` 的 Agent 环境可将本仓库放入各自的 Skill 目录。
 
+可交互 Cleanup Map 已内置在本 Skill 中，不需要另外安装 Archify。它直接内置精简后的 Architecture 渲染与桌面交互核心，再叠加清理专用编译和 Survey/Change 交互。renderer 需要 Node.js 18 或更高版本，不依赖额外 npm 包；交付的 HTML 不会请求外部字体。
+
 ## 使用
 
 ### 审计整个仓库，不改文件
@@ -95,31 +98,51 @@ git clone https://github.com/tt-a1i/simplify-codebase.git \
 使用 $simplify-codebase 复核并整合这个 PR 中的简化建议。保留证据，不保留候选数量。
 ```
 
+### 生成可视化伴随报告
+
+```text
+使用 $simplify-codebase 审计这个仓库。文字证明记录作为权威结果；如果多个已确认组件和消费者让问题位置难以理解，再额外交付带 Finding 深链接的 Cleanup Map。不要把图上可达关系称为运行时影响范围。
+```
+
 ## 输出是什么样的
 
 只读审计会交付覆盖范围、排序后的证明记录、重要反例、未决问题和下一条所需证据。
 
 修改任务会额外交付实际变更、分层验证结果、剩余风险、操作回执与可执行的撤销路径。一次小范围测试通过，不会被包装成完整的运行时或用户验收。
 
+当问题横跨多个组件、状态或消费者时，Skill 可以使用内置 renderer 额外交付经过校验的桌面端交互 HTML。Survey 按“定位、路径、删除边界、判断”组织，Change 按“变更前、删除边界、变更后、验证”组织。它是 proof record 的视觉伴随物，不替代消费者证明、Change 操作回执或撤销路径。拓扑尚未证明或图没有额外解释价值时，会正常退化为带精确文件定位的文字报告。
+
 ## 仓库结构
 
 ```text
 .
 ├── SKILL.md                    # 主工作流与判断标准
+├── PRODUCT.md                  # 可视化产品定位与渐进披露原则
 ├── agents/openai.yaml          # Agent 展示与调用元数据
 ├── references/
 │   ├── investigation.md        # 全库调查与候选发现
 │   ├── boundaries-and-lifecycle.md
 │   ├── execution-and-recovery.md
 │   ├── decision-records.md
-│   └── integrating-findings.md
+│   ├── integrating-findings.md
+│   └── visual-reporting.md     # 可选视觉伴随层的真实性与交付契约
+├── visualization/
+│   ├── cleanup-map.schema.json # 清理专用语义契约
+│   ├── render-cleanup-map.mjs  # Cleanup Map → Archify Architecture 编译与交付
+│   ├── archify-core/           # 内置的 Architecture renderer 与桌面 viewer 核心
+│   ├── cleanup-extension.*     # Survey / Change 专用交互与视觉扩展
+│   ├── examples/               # Survey 与 Change 输入示例
+│   └── test/                   # 契约、路径与产物测试
 ├── docs/validation.md          # 行为验证与质量证据
+├── docs/visual-report-example.md
 └── assets/hero.png             # 原创 Hero 视觉
 ```
 
 ## 质量与边界
 
 这个版本经过 Change、Broad、Integration 和 Decision-record 场景验证，也在一个 973 文件的 Python + TypeScript 项目上完成过全库审计。测试方法与已知边界记录在 [docs/validation.md](./docs/validation.md)。
+
+视觉伴随层直接内置 Archify 的 Architecture renderer、Signal Flow 视觉系统和桌面 viewer 运行时，并在其上增加 Finding、Survey/Change 阶段、删除边界和按需证据抽屉。默认界面先用一两句话说清问题，再让源码、路径和决策证据随阶段展开；图始终占据主要视觉空间。其他通用图种、仓库 CLI、发布与图库流程没有搬入。来源、修改边界和 MIT 许可保留在 [`visualization/`](./visualization/)；报告格式示例见 [docs/visual-report-example.md](./docs/visual-report-example.md)。
 
 Skill 不能替代产品决策。删除仍然可达的能力、已支持接口、持久化表示或兼容路径时，仍需由使用者明确授权。
 

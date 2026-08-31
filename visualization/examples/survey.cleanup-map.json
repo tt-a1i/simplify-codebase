@@ -1,0 +1,75 @@
+{
+  "schema_version": 1,
+  "map_type": "cleanup",
+  "meta": {
+    "title": "运行时分发路径清理分析",
+    "mode": "survey",
+    "scope": "focused",
+    "repository": "example/service",
+    "revision": "example-only",
+    "locale": "zh-CN"
+  },
+  "nodes": [
+    {
+      "id": "entrypoint",
+      "label": "HTTP 入口",
+      "role": "entrypoint",
+      "locus": { "path": "src/http/route.ts", "line": 18, "symbol": "handleRequest" },
+      "column": 0
+    },
+    {
+      "id": "coordinator",
+      "label": "分发协调器",
+      "role": "owner",
+      "locus": { "path": "src/runtime/coordinator.ts", "line": 42, "symbol": "dispatch" },
+      "column": 1
+    },
+    {
+      "id": "legacyRouter",
+      "label": "旧路由适配器",
+      "role": "candidate",
+      "locus": { "path": "src/runtime/legacy-router.ts", "line": 11, "symbol": "routeLegacy" },
+      "column": 2
+    },
+    {
+      "id": "handler",
+      "label": "主处理器",
+      "role": "owner",
+      "locus": { "path": "src/runtime/handler.ts", "line": 27, "symbol": "run" },
+      "column": 3
+    },
+    {
+      "id": "publisher",
+      "label": "结果发布器",
+      "role": "consumer",
+      "locus": { "path": "src/runtime/publisher.ts", "line": 33, "symbol": "publish" },
+      "column": 4
+    }
+  ],
+  "relationships": [
+    { "id": "requestDispatch", "from": "entrypoint", "to": "coordinator", "label": "发起分发", "kind": "call", "evidence": "confirmed" },
+    { "id": "legacyDelegate", "from": "coordinator", "to": "legacyRouter", "label": "重新编码操作键", "kind": "call", "evidence": "confirmed" },
+    { "id": "canonicalDelegate", "from": "legacyRouter", "to": "handler", "label": "转交处理", "kind": "call", "evidence": "confirmed" },
+    { "id": "resultPublish", "from": "handler", "to": "publisher", "label": "发布结果", "kind": "publication", "evidence": "confirmed" }
+  ],
+  "findings": [
+    {
+      "id": "S1",
+      "title": "重复的操作路由层",
+      "disposition": "ranked",
+      "confidence": "high",
+      "risk": "medium",
+      "summary": "legacyRouter 只是重新编码操作键，再交给已经能直接处理它的 handler；它没有独立行为。",
+      "primary": "legacyRouter",
+      "related": ["entrypoint", "coordinator", "legacyRouter", "handler", "publisher"],
+      "route": { "from": "entrypoint", "to": "publisher" },
+      "cut": {
+        "nodes": ["legacyRouter"],
+        "relationships": ["legacyDelegate", "canonicalDelegate"]
+      },
+      "proof": "让 coordinator 直接调用 handler 后，分发集成测试仍应得到相同的发布结果。",
+      "consequence": "删除 legacyRouter 后，旧的操作键表示和适配器导入路径将不再保留。",
+      "unknowns": ["尚未确认仓库外部是否仍有包依赖旧的导入路径。"]
+    }
+  ]
+}
