@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+set -euo pipefail
+HOST=""
+for arg in "$@"; do
+  case "$arg" in
+    --host) shift; HOST="$1"; shift;;
+    --host=*) HOST="${arg#*=}"; shift;;
+  esac
+done
+case "$HOST" in
+  claude|codex) ;;
+  *) echo "Usage: $0 --host <claude|codex>" >&2; exit 1 ;;
+esac
+SKILL_DIR="$HOME/.${HOST}/skills/simplify-codebase"
+mkdir -p "$SKILL_DIR"
+cp -a SKILL.md agents openai.yaml "$SKILL_DIR/" 2>/dev/null || true
+cp -a references docs LICENSE README.md README.en.md "$SKILL_DIR/" 2>/dev/null || true
+echo "Installed simplify-codebase to $SKILL_DIR for host $HOST"
