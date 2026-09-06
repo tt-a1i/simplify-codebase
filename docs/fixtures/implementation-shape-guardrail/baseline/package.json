@@ -1,0 +1,9 @@
+{
+  "name": "implementation-shape-fixture",
+  "private": true,
+  "scripts": {
+    "test": "node --test",
+    "check:layout": "node scripts/check-layout.js",
+    "deploy:check": "node scripts/deploy-check.js"
+  }
+}

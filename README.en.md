@@ -23,6 +23,8 @@ Codebase entropy is rarely just an unused function. It can be duplicated state, 
 
 Static analysis can surface leads, but it cannot prove a deletion safe by itself. This Skill follows runtime consumers, dynamic registration, persisted formats, public interfaces, design history, and verification boundaries before classifying a candidate as remove, merge, retain, or unresolved.
 
+It also recognizes implementation-shape guardrails: tests, static scans, inventories, and build/CI checks that constrain directory layout, literal source text, private defaults, exact component counts, or a historical implementation identity without protecting observable behavior. AI authorship is not removal evidence; business, API, security, persistence, concurrency, real deployment, integration behavior, and active engineering policy guards remain ordinary live contracts.
+
 > **Core principle:** deleted lines are an outcome. The durable gain is deleting a fact, state, contract, or concept that no longer needs maintenance.
 
 ## How it works
@@ -100,6 +102,12 @@ Use $simplify-codebase to remove one high-confidence source of accidental comple
 Use $simplify-codebase to verify and integrate the simplification findings from this PR. Preserve evidence, not finding counts.
 ```
 
+### Investigate implementation-shape guardrails
+
+```text
+Use $simplify-codebase to audit tests, build/CI, and static checks that only preserve an obsolete implementation shape. Do not modify files, and retain checks that still protect business, security, deployment, integration behavior, or active engineering policy.
+```
+
 ### Add a visual companion
 
 ```text
@@ -138,6 +146,8 @@ Survey follows Locate, Trace, Cut, and Decide; Change follows Before, Cut, After
 │   ├── examples/               # Survey and Change inputs
 │   └── test/                   # Contract, route, and artifact tests
 ├── docs/validation.md          # Behavioral validation evidence
+├── docs/fixtures/implementation-shape-guardrail/
+│                                # Reproducible guardrail fixture, patches, and receipts
 ├── docs/visual-report-example.md
 └── assets/hero.png             # Original hero artwork
 ```

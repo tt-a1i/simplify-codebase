@@ -6,6 +6,8 @@ Purpose: retire each proved obligation completely, validate the surviving system
 
 Prefer one high-confidence ownership boundary over a mixed cleanup batch. The selected change should retire a complete obligation and have a decisive check. If investigation reveals a larger product choice or broader migration than the user authorized, present the ranked plan and obtain one scope confirmation before applying it.
 
+When one request includes an implementation-shape guardrail and another simplification, preserve separate proof records and cut boundaries. Removing the guardrail must not become authority to remove the implementation it once described, or vice versa.
+
 Pause application when dynamic or external consumers remain unknown, stored data lacks a migration story, baseline failures erase the intended signal, the cut crosses unrelated ownership boundaries, or rollback would be impractical. Convert the result into an evidence report with the exact missing decision or fact.
 
 ## Remove the obligation vertically
@@ -60,5 +62,7 @@ Undo: files or commit range to reverse and any data/config restoration required
 ```
 
 The undo path must match the side effects. Source-only changes may be reversible from the diff; migrations, published packages, deployments, and durable data require explicit restoration steps and separate authorization.
+
+For a removed implementation-shape guardrail, the existing `Artifacts` entry must identify each deleted file or materially deleted section and state its original check, decisive removal evidence, surviving behavior, reintroduction condition, and verification. Use the same receipt rather than creating a parallel delivery schema.
 
 The batch is complete only when the structural cut criterion, every applicable verification ring, the complete diff audit, and the operation receipt are all satisfied or reported as unavailable with the resulting evidence limitation.

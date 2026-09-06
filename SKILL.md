@@ -1,6 +1,6 @@
 ---
 name: simplify-codebase
-description: Simplification audit or authorized codebase simplification whose stated objective is to remove accidental complexity. Use for evidence-backed deletion or consolidation of dead code, duplicate state, redundant APIs or layers, ownerless abstractions, obsolete compatibility or design records, and over-engineering in any language; also use for 代码简化 or 熵回收. Do not use for general code review, onboarding, style-only refactoring, or performance tuning.
+description: Simplification audit or authorized codebase simplification whose stated objective is to remove accidental complexity. Use for evidence-backed deletion or consolidation of dead code, duplicate state, redundant APIs or layers, ownerless abstractions, obsolete compatibility or design records, over-engineering, and tests or checks that preserve an obsolete implementation shape; also use for 代码简化、熵回收、实现形态守卫审计或清理. Do not use for general code review, onboarding, style-only refactoring, or performance tuning.
 ---
 
 # Simplify Codebase
@@ -13,6 +13,8 @@ First choose the authority mode:
 
 - **Survey** for simplification audit, investigation, or candidate-finding requests. Remain read-only and return ranked evidence.
 - **Change** for explicit simplify, remove, consolidate, refactor, or repository-documentation edit requests. Prove each cut, implement it within the authorized scope, and validate the surviving contract.
+
+A request that only mentions defensive, anti-regression, or AI-generated guardrails without an explicit edit verb or other change authority remains Survey. AI provenance is not deletion evidence and does not lower the proof burden. When a request combines an implementation-shape guardrail with another simplification, keep separate proof records and cut boundaries even when they are validated in the same run.
 
 Then choose the coverage scope:
 
@@ -35,6 +37,8 @@ The contract map is complete when all in-scope entrypoints and authority boundar
 ## Cover the relevant surface
 
 For every Broad engagement, and for Focused work involving dynamic architecture or dependency substitution, read [investigation.md](references/investigation.md). Build a coverage map before ranking findings; the first plausible deletion must not end the survey.
+
+Also read [investigation.md](references/investigation.md) when tests, source scans, inventories, import bans, or build/CI checks may preserve an implementation shape rather than observable behavior. Apply its implementation-shape guardrail lens within the ordinary proof workflow.
 
 For concurrency, cancellation, readiness, cleanup, defensive copies, validation, authorization, security isolation, accessibility, data-loss prevention, or cross-process data, also read [boundaries-and-lifecycle.md](references/boundaries-and-lifecycle.md).
 

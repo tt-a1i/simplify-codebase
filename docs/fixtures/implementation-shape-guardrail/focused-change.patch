@@ -1,0 +1,38 @@
+diff --git a/docs/fixtures/implementation-shape-guardrail/baseline/package.json b/docs/fixtures/implementation-shape-guardrail/baseline/package.json
+--- a/docs/fixtures/implementation-shape-guardrail/baseline/package.json
++++ b/docs/fixtures/implementation-shape-guardrail/baseline/package.json
+@@ -3,7 +3,6 @@
+   "private": true,
+   "scripts": {
+     "test": "node --test",
+-    "check:layout": "node scripts/check-layout.js",
+     "deploy:check": "node scripts/deploy-check.js"
+   }
+ }
+diff --git a/docs/fixtures/implementation-shape-guardrail/baseline/scripts/check-layout.js b/docs/fixtures/implementation-shape-guardrail/baseline/scripts/check-layout.js
+deleted file mode 100644
+--- a/docs/fixtures/implementation-shape-guardrail/baseline/scripts/check-layout.js
++++ /dev/null
+@@ -1,7 +0,0 @@
+-const assert = require("node:assert/strict");
+-const fs = require("node:fs");
+-const path = require("node:path");
+-
+-const sourceDirectory = path.join(__dirname, "../src");
+-assert.deepEqual(fs.readdirSync(sourceDirectory), ["catalog.js"]);
+-assert.match(fs.readFileSync(path.join(sourceDirectory, "catalog.js"), "utf8"), /function priceFor/);
+diff --git a/docs/fixtures/implementation-shape-guardrail/baseline/tests/layout.guard.test.js b/docs/fixtures/implementation-shape-guardrail/baseline/tests/layout.guard.test.js
+deleted file mode 100644
+--- a/docs/fixtures/implementation-shape-guardrail/baseline/tests/layout.guard.test.js
++++ /dev/null
+@@ -1,10 +0,0 @@
+-const assert = require("node:assert/strict");
+-const fs = require("node:fs");
+-const path = require("node:path");
+-const test = require("node:test");
+-
+-test("preserves the historical implementation shape", () => {
+-  const source = fs.readFileSync(path.join(__dirname, "../src/catalog.js"), "utf8");
+-  assert.match(source, /function priceFor/);
+-  assert.deepEqual(fs.readdirSync(path.join(__dirname, "../src")), ["catalog.js"]);
+-});

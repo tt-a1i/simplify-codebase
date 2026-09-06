@@ -31,8 +31,11 @@ Use these lenses to generate leads:
 - **Local infrastructure**: custom parsing, retry, framing, matching, diffing, scheduling, or collection code duplicates a suitable platform feature or dependency.
 - **Support drag**: tests, examples, snapshots, generated expectations, or documentation are the only reason an otherwise unused surface remains.
 - **Feature fossil**: implementation was abandoned or removed while schema, configuration, tests, compatibility logic, or design records still preserve its outline.
+- **Implementation-shape guardrail**: a test, source scan, inventory, import ban, or build/CI check enforces file layout, literal source text, private defaults, exact component counts, or a historical implementation identity without owning observable behavior.
 
 Do not equate visual similarity with duplication. Independent implementations may test an interface, isolate failure domains, protect different owners, or support distinct compatibility contracts.
+
+Do not use AI authorship or a label such as "defensive" as evidence that a guardrail is removable. Treat it as a candidate only when the consumer map shows that its remaining obligation is an obsolete implementation shape. Keep guards that protect business outcomes, public APIs, trust boundaries, security, persistence, concurrency, deployment acceptance, integration behavior, or an active engineering policy.
 
 ## Climb the evidence ladder
 
