@@ -11,7 +11,7 @@ The fixture contains three distinct kinds of evidence:
 - `tests/layout.guard.test.js` and `scripts/check-layout.js` both require the exact `src/catalog.js` filename and the literal spelling `function priceFor`, but own no observable behavior;
 - the unexported `legacyLabel` helper has no fixture consumer and is a separate dead-code candidate.
 
-The baseline has no package dependencies. The recorded commands below were rechecked on 2026-09-06 in Ubuntu WSL2 with Node.js 22.23.2 and npm 12.0.2. They use POSIX-shell `npm`; use `npm.cmd` on Windows PowerShell.
+The baseline has no package dependencies. The commands below use POSIX-shell `npm`; use `npm.cmd` on Windows PowerShell.
 
 ## Closed-world fixture boundary
 
@@ -19,7 +19,7 @@ The Change examples use an explicit closed-world premise: this disposable fixtur
 
 ## Independent Skill runs
 
-The original runs used clean copies of `baseline/` and Skill head `6e4fdb9a24a4f0880d67c4c983633b19d10e2ebe`. The Change command evidence and receipts below were rerun on 2026-09-06 under the explicit closed-world premise.
+The runs used clean copies of `baseline/` and Skill head `6e4fdb9a24a4f0880d67c4c983633b19d10e2ebe` under the explicit closed-world premise.
 
 ### Ambiguous request
 
